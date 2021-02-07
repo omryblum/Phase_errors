@@ -19,6 +19,7 @@ interferogram_matrix = wafer_reflection + mirror_reflection + 2 * np.sqrt(wafer_
 diff_interferogram = np.mean(interferogram_matrix, 0) - interferogram_matrix[wl_axis.size//2, :]
 
 # find the real phi/decoherence term from measured points
+# Perform simple DFT, multiplying by cos and Sin waves to create the complex number
 
 # plt.rcParams.update({'font.size': 24})
 fig, ax = plt.subplots(2, 2)
