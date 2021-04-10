@@ -26,7 +26,7 @@ fig, ax = plt.subplots(1, 1)
 # fig.dpi = 100
 fig._tight = True
 
-fig.axes[0].plot(frequencies, 1/(merit+1), linewidth=2)
+fig.axes[0].plot(frequencies, 100/(merit+1), linewidth=2)
 fig.axes[0].title._text = f'Most probably origin frequency is {frequencies[np.argmin(merit)]:.0f} Hz'
 fig.axes[0].xaxis.label._text, fig.axes[0].yaxis.label._text = 'Frequency', 'Score'
 
