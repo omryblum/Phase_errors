@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 theta_vec = np.array(np.linspace(0, np.pi/2, 100))
 phi_vec = np.array(np.linspace(0, -np.pi/2, 100))
 
