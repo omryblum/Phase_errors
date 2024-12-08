@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-polarizer_vec = np.linspace(-np.pi/2, np.pi/2, 100)
-analizer_vec = np.linspace(-np.pi/2, np.pi/2, 100)
+polarizer_vec = np.linspace(-np.pi/2, np.pi/2, 101)
+analizer_vec = np.linspace(-np.pi/2, np.pi/2, 101)
 
 # Sample = Mirror
 # sample_mat = np.array([[1, 0],

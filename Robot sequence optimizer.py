@@ -7,7 +7,8 @@ class RobotSeqOptimizer():
         """defining variables"""
         self.times = {'LP2AL': 3, 'AL2MU': 3, 'SWAP': 4, 'LP2MUbySwaps': 15}
         # self.wafers = {'MU1': {10: 5, 60: 2}, 'MU2': {20: 4, 100: 1}, 'Any': {40: 0}}  # grouped wafers by expected recipe time
-        self.wafers = {'MU1': {10: 0}, 'MU2': {20: 0}, 'Any': {60: 3, 10: 7}}  # grouped wafers by expected recipe time
+        self.wafers = {'MU1': {10: 5}, 'MU2': {25: 4}, 'Any': {60: 2}}  # grouped wafers by expected recipe time
+        # self.wafers = {'MU1': {10: 0}, 'MU2': {20: 0}, 'Any': {60: 3, 10: 7}}  # grouped wafers by expected recipe time
         self.shortest_path = []
         self.costs = {}
 
