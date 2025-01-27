@@ -1,16 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.ma.core import argmax
+from scipy.interpolate import interp1d
 
 # Function to calculate intensity-based coherence degradation due to numerical aperture
 def coherence_na_wl(center_wavelength, na, delta_z, num_rays, wavelengths, wl_weights):
     # Generate normalized radial distances within the NA
     r_values = np.linspace(0, 1, num_rays)  # Radial distances normalized to NA
-    na_weights = np.array([2 * np.pi * r * obs_profile(r * na) ** 2 for r in r_values]) # OBS usage
+    # na_weights = np.array([2 * np.pi * r * obs_profile(r * na) ** 2 for r in r_values]) # OBS usage
+    na_weights = 2 * np.pi * r_values * obs_profile(r_values * na) ** 2
     # na_weights = 2 * np.pi * r_values # Simple flat top NA
 
     # Optical path difference (OPD) for each ray
-    # opd_rays = delta_z * 1000 * (1 - np.sqrt((1 - (r_values * na) ** 2)))  # OPD for defocus
     opd_rays = delta_z * 1000 * np.sqrt(1 + (r_values * na) ** 2)  # OPD for defocus
 
     # Phase shift for each ray
@@ -36,14 +37,15 @@ def gaussian_weights(wavelengths, center_wavelength, bandwidth):
 def obs_profile(requested_na):
     OBS_intensity = [1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 1.0000, 0.9997, 0.9978, 0.9926, 0.9843, 0.9739, 0.9595, 0.9426, 0.9202, 0.8945, 0.8653, 0.8330, 0.7989, 0.7634, 0.7266, 0.6882, 0.6486, 0.6079, 0.5650, 0.5213, 0.4763, 0.4311, 0.3840, 0.3367, 0.2902, 0.2476, 0.2091, 0.1746, 0.1430, 0.1152, 0.0911, 0.0698, 0.0502, 0.0342, 0.0233, 0.0164, 0.0118, 0.0081, 0.0051, 0.0030, 0.0018, 0.0010, 0.0006, 0.0003, 0.0002, 0.0001, 0.0001, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000]
     NA_vec = [0.0000, 0.0012, 0.0023, 0.0035, 0.0047, 0.0058, 0.0070, 0.0082, 0.0094, 0.0105, 0.0117, 0.0129, 0.0140, 0.0152, 0.0164, 0.0175, 0.0187, 0.0199, 0.0211, 0.0222, 0.0234, 0.0246, 0.0257, 0.0269, 0.0281, 0.0292, 0.0304, 0.0316, 0.0327, 0.0339, 0.0351, 0.0363, 0.0374, 0.0386, 0.0398, 0.0409, 0.0421, 0.0433, 0.0444, 0.0456, 0.0468, 0.0480, 0.0491, 0.0503, 0.0515, 0.0526, 0.0538, 0.0550, 0.0561, 0.0573, 0.0585, 0.0596, 0.0608, 0.0620, 0.0632, 0.0643, 0.0655, 0.0667, 0.0678, 0.0690, 0.0702, 0.0713, 0.0725, 0.0737, 0.0749, 0.0760, 0.0772, 0.0784, 0.0795, 0.0807, 0.0819, 0.0830, 0.0842, 0.0854, 0.0865, 0.0877, 0.0889, 0.0901, 0.0912, 0.0924, 0.0936, 0.0947, 0.0959, 0.0971, 0.0982, 0.0994, 0.1006, 0.1018, 0.1029, 0.1041, 0.1053, 0.1064, 0.1076, 0.1088, 0.1099, 0.1111, 0.1123, 0.1135, 0.1146, 0.1158, 0.1170, 0.1181, 0.1193, 0.1205, 0.1216, 0.1228, 0.1240, 0.1251, 0.1263]
-    return OBS_intensity[np.abs(NA_vec - requested_na).argmin()]
+    interp_func = interp1d(NA_vec, OBS_intensity, kind='linear')  # Linear interpolation
+    return interp_func(requested_na)
 
 # Parameters
 center_wavelengths = np.linspace(200, 1000, 100)  # Center wavelengths (200 nm to 1000 nm)
 bandwidth = 4  # Fixed bandwidth (2 nm)
 delta_z_values = np.linspace(0, 100, 100)  # Focus shift (0 to 5 microns)
 num_wavelengths = 100 # Number of wavelength samples
-na = 0.1  # Numerical aperture using PRISM2 OBS
+na = 0.12  # Numerical aperture using PRISM2 OBS
 num_na_rays = 20  # Number of rays sampled
 
 # Create a 2D grid for coherence degradation
@@ -70,7 +72,7 @@ wl_indices = [np.abs(center_wavelengths - wl).argmin() for wl in actual_waveleng
 
 # Plotting the OBS transmission curve
 r_values = np.linspace(0, 1, 100)  # Radial distances normalized to NA
-na_weights = np.array([x * obs_profile(x * na) ** 4 for x in r_values])
+na_weights = r_values * obs_profile(r_values * na) ** 2
 plt.plot(r_values*na, na_weights)
 
 # Create the figure with the desired layout
