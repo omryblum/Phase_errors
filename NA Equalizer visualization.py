@@ -142,11 +142,11 @@ class PolarInterpolationPlotter:
 
 # Usage
 folder_path = r"C:\Users\omry-b\Nova\Project Management (DMD) - General\SA Product Line\Sustain\Investigations\NA induced T2T\NA Grids reflectivity\\"
-file_path = folder_path+r'Grating_Oblique0_SS.csv'
+file_path = folder_path+r'Silicon 18A - Oblique 0_Xpol.csv'
 plotter = PolarInterpolationPlotter(file_path)
 plotter.convert_to_cartesian()
 plotter.interpolate_data()
-# plotter.plot_NA()
-# plotter.plot_spectra()
+plotter.plot_NA()
+plotter.plot_spectra()
 # plotter.plot_relative_energy()
 plotter.plot_abs_energy()
